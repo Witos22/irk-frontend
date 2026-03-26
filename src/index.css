@@ -10,7 +10,7 @@
 
 /* 3. TŁO I CENTROWANIE CAŁEJ STRONY (FLEXBOX MAGIC) */
 body {
-  background-color: #f4f7f6; 
+  /* background-color: #f4f7f6;  */
   color: #333333; 
   display: flex;
   justify-content: center;
