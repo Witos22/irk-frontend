@@ -12,6 +12,9 @@ function RegisterForm(){
         passwordHash: ''
     });
 
+    const [message, setMessage] = useState('');
+    const [isError, setIsError] = useState(false);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -23,6 +26,8 @@ function RegisterForm(){
         e.preventDefault();
         console.log("Wysyłanie danych do Springa...", formData);
 
+        setMessage('');
+
         try {
             const response = await fetch('http://localhost:8081/api/candidates/register', {
                 method: 'POST',
@@ -32,18 +37,47 @@ function RegisterForm(){
                 body: JSON.stringify(formData)
             });
 
-            if (response.ok){
+            if (response.ok || response.status === 201) {
                 const savedCandidate = await response.json();
                 console.log("Zapisano dane kandydata w bazie", savedCandidate);
+
+                setIsError(false);
+                setMessage("Zarejestrowano pomyślnie! Możesz się teraz zalogować.");
+
+                setFormData({ firstName: '', lastName: '', email: '', phoneNumber: '', passwordHash: '' });
+
+            } else if (response.status === 409) {
+                setIsError(true);
+                setMessage("Rejestracja nieudana - podany adres email jest już zajęty.");
             } else {
                 console.error("Odrzucono. kod błędu:", response.status);
+                setIsError(true);
+                setMessage("Wystąpił błąd serwera. Spróbuj ponownie później.");
+            }
+        } catch (error) {
+            console.error("Błąd połączenia ze springiem", error);
+            setIsError(true);
+            setMessage("Brak połączenia z serwerem. Upewnij się, że backend działa.");
         }
-    } catch (error){
-        console.error("Błąd połączenia ze springiem", error);
-    }
     };
 
     return (
+        <div>
+            <h2>Rejestracja Kandydata</h2>
+
+            {message && (
+                <div style={{
+                    padding: '10px',
+                    marginBottom: '15px',
+                    color: 'white',
+                    backgroundColor: isError ? '#dc3545' : '#28a745',
+                    borderRadius: '5px',
+                    textAlign: 'center',
+                    fontWeight: 'bold'
+                }}>
+                    {message}
+                </div>
+            )}
         <form onSubmit={handleSubmit}>
             <label>Imię:</label>
             <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
@@ -63,6 +97,7 @@ function RegisterForm(){
             <button type="submit">Zarejestruj się</button>
             <button type='button' onClick={()=> navigate('/login')} className="link-button">Masz już konto? Zaloguj się</button>
         </form>
+    </div>
     );
 }
 
