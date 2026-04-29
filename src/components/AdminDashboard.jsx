@@ -17,8 +17,47 @@ function AdminDashboard() {
             {admin && admin.role === 'ADMIN' ? (
                 <div>
                     <p>Zalogowano jako: <strong>{admin.email}</strong></p>
-                    <p>Tutaj w przyszłości będzie lista wszystkich rekrutacji.</p>
-                    <button onClick={handleLogout} style={{ backgroundColor: 'red', color: 'white' }}>Wyloguj Admina</button>
+                    <div style={{
+                            margin: '20px 0',
+                            padding: '15px',
+                            backgroundColor: '#fff5f5',
+                            borderRadius: '8px',
+                            border: '1px solid #ffa39e'
+                        }}>
+                            <h3>Zarządzanie Systemem</h3>
+                            <button
+                                onClick={() => navigate('/admin/courses')}
+                                style={{
+                                    padding: '10px 20px',
+                                    backgroundColor: '#1890ff',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    marginRight: '10px',
+                                    marginLeft: '10px',
+                                    marginTop: '10px'
+
+                                }}
+                            >
+                                Edytuj Ofertę Edukacyjną
+                            </button>
+                        </div>
+                    <button onClick={handleLogout}
+                    style={{
+                        padding: '10px 20px',
+                        backgroundColor: 'red',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        border: '1px solid #ff4d4f',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '14px'
+                        }}
+                    >
+                        Wyloguj Admina
+                    </button>
                 </div>
             ) : (
                 <p>Brak uprawnień! <button onClick={() => navigate('/admin/login')}>Zaloguj</button></p>

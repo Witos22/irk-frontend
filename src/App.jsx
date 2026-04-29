@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard';
 import AdminLoginForm from './components/AdminLoginForm';
 import AdminDashboard from './components/AdminDashboard';
 import CoursesForm from './components/CoursesForm';
+import AdminCoursesManager from './components/AdminCoursesManager';
 
 
 function App() {
@@ -27,6 +28,8 @@ function App() {
           <Route path="/admin/login" element={<AdminLoginForm/>} />
 
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
+          <Route path="/admin/courses" element={<AdminCoursesManager />} />
         </Routes>
       </div>
     </Router>
