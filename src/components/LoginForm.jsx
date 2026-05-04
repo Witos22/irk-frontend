@@ -60,6 +60,10 @@ function LoginForm(){
                 <button type="button" onClick={() => navigate('/register')} className="link-button">
                     Nie masz konta? Zarejestruj się
                 </button>
+                {/* New button for Educational Offer */}
+                <button type="button" onClick={() => navigate('/educational-offer')} className="link-button" style={{ marginTop: '10px' }}>
+                    Zobacz ofertę edukacyjną
+                </button>
             </form>
         </div>
     );
