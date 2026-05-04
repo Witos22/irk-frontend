@@ -8,6 +8,7 @@ import AdminDashboard from './components/AdminDashboard';
 import CoursesForm from './components/CoursesForm';
 import AdminCoursesManager from './components/AdminCoursesManager';
 import ResultsForm from './components/ResultsForm';
+import EducationalOffer from './components/EducationalOffer';
 
 function App() {
   return (
@@ -47,6 +48,14 @@ function App() {
             <div className='app-container'>
             <h1>System IRK</h1>
             <CoursesForm/>
+            </div>
+        }/>
+
+        {/* New route for Educational Offer */}
+        <Route path='/educational-offer' element={
+            <div className='app-container'>
+            <h1>System IRK</h1>
+            <EducationalOffer/>
             </div>
         }/>
 
