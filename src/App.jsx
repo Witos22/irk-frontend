@@ -61,8 +61,10 @@ function App() {
         }/>
 
         <Route path="/admin-dashboard" element={
-            <div className='app-container'>
-            <h1>System IRK</h1>
+            <div className='dashboard-wrapper'>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <span className="irk-logo">System IRK</span>
+                </div>
             <AdminDashboard/>
             </div>
         }/>
