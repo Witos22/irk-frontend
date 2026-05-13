@@ -38,9 +38,11 @@ function App() {
         }/>
 
         <Route path='/dashboard' element={
-            <div className='app-container'>
-            <h1>System IRK</h1>
-            <Dashboard/>
+            <div className='dashboard-wrapper'>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <span className="irk-logo">System IRK</span>
+                </div>
+                <Dashboard/>
             </div>
         }/>
 
@@ -51,7 +53,6 @@ function App() {
             </div>
         }/>
 
-        {/* New route for Educational Offer */}
         <Route path='/educational-offer' element={
             <div className='app-container'>
             <h1>System IRK</h1>
