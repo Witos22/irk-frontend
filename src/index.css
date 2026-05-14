@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* 2. RESET I USTAWIENIA GLOBALNE */
+/* RESET I USTAWIENIA GLOBALNE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,7 +8,7 @@
   font-family: 'Inter', sans-serif; 
 }
 
-/* 3. TŁO I CENTROWANIE CAŁEJ STRONY (FLEXBOX MAGIC) */
+/* TŁO I CENTROWANIE CAŁEJ STRONY (FLEXBOX MAGIC) */
 body {
   background-color: #f4f7f6; 
   color: #333333; 
@@ -18,7 +18,7 @@ body {
   min-height: 100vh; 
 }
 
-/* 4. GŁÓWNY KONTENER APLIKACJI (KARTA) */
+/* GŁÓWNY KONTENER APLIKACJI (KARTA) */
 .app-container {
   background-color: #ffffff;
   padding: 40px;
@@ -62,7 +62,7 @@ h1, h2 {
   display: inline-block;
 }
 
-/* 5. STYLE FORMULARZA I PÓL TEKSTOWYCH */
+/* STYLE FORMULARZA I PÓL TEKSTOWYCH */
 form {
   display: flex;
   flex-direction: column;
@@ -93,7 +93,7 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
 }
 
-/* 6. STYLE PRZYCISKÓW */
+/* STYLE PRZYCISKÓW */
 button[type="submit"] {
   background-color: #0056b3; 
   color: white;
@@ -172,4 +172,301 @@ button[type="submit"]:hover {
   content: "←";
   font-size: 18px;
   line-height: 1;
+}
+
+/* AdminCoursesManager */
+
+.admin-page-container {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  background-color: #f4f7f6;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.admin-content-card {
+  width: 100%;
+  max-width: 1000px;
+  background: transparent;
+}
+
+.admin-form-section {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+  border: 1px solid #f0f0f0;
+}
+
+.admin-table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  overflow: hidden;
+  width: 100%;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  table-layout: fixed;
+}
+
+.admin-table th, .admin-table td {
+   text-align: left;
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cancel-button {
+    height: 45px;
+    padding: 0 20px;
+    background-color: #ffffff;
+    color: #595959;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-button:hover {
+    color: #ff4d4f;
+    border-color: #ff4d4f;
+    background-color: #fff1f0;
+    box-shadow: 0 2px 8px rgba(255, 77, 79, 0.1);
+}
+
+.col-limit {
+  width: 15%;
+  text-align: center !important;
+}
+
+.col-actions {
+  width: 20%;
+  text-align: center !important;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* CandidatesList */
+
+.candidates-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.candidates-table-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+}
+
+.candidates-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.candidates-table th {
+    background-color: #fafafa;
+    padding: 16px;
+    color: #595959;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 2px solid #f0f0f0;
+    text-align: left;
+}
+
+.candidates-table td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.col-rank { width: 80px; text-align: center !important; }
+.col-points { width: 100px; text-align: center !important; }
+.col-status { width: 180px; text-align: center !important; }
+.col-actions { width: 120px; text-align: center !important; }
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    borderRadius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.details-button {
+    background: white;
+    border: 1px solid #d9d9d9;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #595959;
+    transition: all 0.2s;
+}
+
+.details-button:hover {
+    color: #1890ff;
+    border-color: #1890ff;
+    background-color: #f0f7ff;
+}
+
+@media print {
+    .back-button, .primary-button { display: none; }
+    .candidates-container { width: 100%; margin: 0; padding: 0; }
+}
+
+/* Dashboard kandydata */
+
+/* Kontener główny */
+.dashboard-container {
+    max-width: 1200px;
+    width: 95%;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Nagłówek strony */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.header-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-decorator {
+    width: 4px;
+    height: 24px;
+    background-color: #1890ff;
+    border-radius: 2px;
+}
+
+.header-title {
+    fontSize: 24px;
+    font-weight: 600;
+    color: #434343;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* Karta powitalna */
+.welcome-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-align: center;
+    margin-bottom: 30px;
+    border: 1px solid #f0f0f0;
+}
+
+.welcome-card h2 {
+    color: #1890ff;
+    margin-bottom: 10px;
+}
+
+.welcome-card p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* Grid kart akcji */
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+/* Karta akcji */
+.action-card {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e8e8e8;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    border-color: #1890ff;
+    box-shadow: 0 8px 24px rgba(24, 144, 255, 0.15);
+}
+
+.action-card-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.action-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+}
+
+.action-card p {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Przyciski */
+.btn-dashboard {
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    margin-top: 20px;
+}
+
+.btn-logout {
+    background-color: transparent;
+    color: #ff4d4f;
+    border: 1px solid #ff4d4f;
+    width: auto;
+    padding: 8px 15px;
+    font-size: 14px;
 }
