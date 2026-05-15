@@ -470,3 +470,18 @@ button[type="submit"]:hover {
     padding: 8px 15px;
     font-size: 14px;
 }
+
+.btn-delete-outline {
+    background-color: white;
+    color: #ff4d4f;
+    border: 1px solid #ff4d4f;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-delete-outline:hover {
+    border-color: #ff4d4f;
+    background-color: #fff1f0;
+    filter: brightness(0.95);
+}

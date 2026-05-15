@@ -12,6 +12,7 @@ import EducationalOffer from './components/EducationalOffer';
 import AdminRecruitmentManager from './components/AdminRecruitmentManager';
 import CandidatesList from './components/CandidatesList';
 import RecruitmentForm from './components/RecruitmentForm';
+import RecruitmentList from './components/RecruitmentList';
 
 function App() {
   return (
@@ -95,6 +96,11 @@ function App() {
         <Route path="/admin/candidates" element={
             <div className='admin-page-container'>
                <CandidatesList />
+            </div>
+        }/>
+        <Route path="/admin/recruitments-list" element={
+            <div className='admin-page-container'>
+               <RecruitmentList />
             </div>
         }/>
       </Routes>
