@@ -9,6 +9,7 @@ import CoursesForm from './components/CoursesForm';
 import AdminCoursesManager from './components/AdminCoursesManager';
 import ResultsForm from './components/ResultsForm';
 import EducationalOffer from './components/EducationalOffer';
+import AdminRecruitmentManager from './components/AdminRecruitmentManager';
 
 function App() {
   return (
@@ -75,6 +76,13 @@ function App() {
             <AdminCoursesManager/>
             </div>
         }/>
+
+     <Route path="/admin/recruitments" element={
+                <div className='app-container'>
+                <h1>System IRK</h1>
+                <AdminRecruitmentManager/>
+                </div>
+            }/>
 
         <Route path="/results" element={
           <div className="results-page-container">
