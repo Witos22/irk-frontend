@@ -59,11 +59,11 @@ function Dashboard() {
                 <div className="action-card">
                     <div>
                         <div className="action-card-icon">🎓</div>
-                        <h3>Kierunki Studiów</h3>
-                        <p>Wybierz interesujące Cię kierunki lub zmień obecne preferencje.</p>
+                        <h3>Aktualne Nabory</h3>
+                        <p>Wybierz interesujące Cię kierunki i złóż nma nie aplikacje.</p>
                     </div>
-                    <button onClick={() => navigate('/courses')} className="btn-dashboard btn-primary">
-                        Przejdź do kierunków
+                    <button onClick={() => navigate('/recruitments')} className="btn-dashboard btn-primary">
+                        Przejdź do rekrutacji
                     </button>
                 </div>
 
