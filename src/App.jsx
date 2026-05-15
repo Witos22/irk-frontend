@@ -11,6 +11,7 @@ import ResultsForm from './components/ResultsForm';
 import EducationalOffer from './components/EducationalOffer';
 import AdminRecruitmentManager from './components/AdminRecruitmentManager';
 import CandidatesList from './components/CandidatesList';
+import RecruitmentForm from './components/RecruitmentForm';
 import RecruitmentList from './components/RecruitmentList';
 
 function App() {
@@ -49,10 +50,10 @@ function App() {
             </div>
         }/>
 
-        <Route path='/courses' element={
-            <div className='app-container'>
-            <span className="irk-logo">System IRK</span>
-            <CoursesForm/>
+        <Route path='/recruitments' element={
+            <div className='results-page-container'>
+                <span className="irk-logo">System IRK</span>
+                <RecruitmentForm/>
             </div>
         }/>
 
