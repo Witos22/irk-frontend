@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function AdminRecruitmentManager() {
+    const navigate = useNavigate();
     const [recruitments, setRecruitments] = useState([]);
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -40,7 +42,6 @@ function AdminRecruitmentManager() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (new Date(formData.startDate) > new Date(formData.endDate)) {
             alert("Błąd: Data zakończenia nie może być wcześniejsza niż data rozpoczęcia!");
             return;
@@ -66,7 +67,6 @@ function AdminRecruitmentManager() {
             if (response.ok) {
                 fetchData();
                 resetForm();
-                alert(isEditing ? "Zaktualizowano rekrutację!" : "Dodano nową rekrutację!");
             } else {
                 const errorText = await response.text();
                 alert("Błąd zapisu: " + errorText);
@@ -78,17 +78,13 @@ function AdminRecruitmentManager() {
 
     const handleDelete = async (id) => {
         if (!window.confirm("Czy na pewno chcesz usunąć tę rekrutację?")) return;
-
         try {
             const response = await fetch(`${RECRUITMENTS_API_URL}/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
             if (response.ok) {
-                alert("Rekrutacja została usunięta!");
                 fetchData();
-            } else {
-                alert("Nie udało się usunąć rekrutacji.");
             }
         } catch (err) {
             alert("Błąd usuwania: " + err.message);
@@ -101,142 +97,230 @@ function AdminRecruitmentManager() {
     };
 
     const startEdit = (rec) => {
-        // NOWOŚĆ: Szukamy, czy jakikolwiek kierunek ma przypisaną tę rekrutację
         const assignedCourse = courses.find(c => c.recruitment && c.recruitment.id === rec.id);
-
         setFormData({
             id: rec.id,
             name: rec.name,
             startDate: rec.startDate,
             endDate: rec.endDate,
             isActive: rec.isActive,
-            courseId: assignedCourse ? assignedCourse.id : '' // Wstawiamy jego ID do formularza
+            courseId: assignedCourse ? assignedCourse.id : ''
         });
         setIsEditing(true);
     };
 
-    // Funkcja pomocnicza do wyświetlania przypisanego kierunku w tabeli
     const getAssignedCourseName = (recId) => {
         const assignedCourse = courses.find(c => c.recruitment && c.recruitment.id === recId);
-        return assignedCourse ? assignedCourse.name : <span style={{ color: '#999', fontStyle: 'italic' }}>Brak</span>;
+        return assignedCourse ? assignedCourse.name : <span style={{ color: '#bfbfbf' }}>Nieprzypisany</span>;
     };
 
-    if (loading) return <div>Ładowanie panelu administratora...</div>;
+    if (loading) return <div className="admin-page-container">Ładowanie danych...</div>;
 
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px', fontFamily: 'Arial' }}>
-            <h2>Panel Administratora: Moduł Rekrutacji</h2>
+        <div className="admin-page-container">
+            <div className="admin-content-card" style={{ maxWidth: '800px', width: '100%' }}>
 
-            <div style={{ backgroundColor: '#f0f2f5', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-                <h3>{isEditing ? 'Edytuj rekrutację' : 'Otwórz nową rekrutację'}</h3>
-                <form onSubmit={handleSubmit}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Nazwa rekrutacji:</label>
-                    <input
-                        type="text"
-                        placeholder="np. Letnia Rekrutacja 2026/2027"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        style={{ width: '100%', padding: '8px', marginBottom: '15px', boxSizing: 'border-box'}}
-                        required
-                    />
-
-                    <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
-                        <div style={{ flex: 1 }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Data rozpoczęcia:</label>
-                            <input
-                                type="date"
-                                value={formData.startDate}
-                                onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-                                required
-                            />
-                        </div>
-                        <div style={{ flex: 1 }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Data zakończenia:</label>
-                            <input
-                                type="date"
-                                value={formData.endDate}
-                                onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-                                required
-                            />
+                {/* Header sekcji */}
+                <div style={{ textAlign: 'left', marginBottom: '20px' }}>
+                    <button onClick={() => navigate('/admin-dashboard')} className="back-button">
+                        Powrót do panelu
+                    </button>
+                    <div className="dashboard-header" style={{ marginBottom: '30px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div className="header-decorator"></div>
+                            <h1 className="header-title">Zarządzanie Rekrutacjami</h1>
                         </div>
                     </div>
+                    <p style={{ color: '#8c8c8c' }}>Definiuj ramy czasowe i przypisuj je do kierunków studiów.</p>
+                </div>
 
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Przypisz kierunek (Max 1 na rekrutację):</label>
-                    <select
-                        value={formData.courseId}
-                        onChange={(e) => setFormData({...formData, courseId: e.target.value})}
-                        style={{ width: '100%', padding: '8px', marginBottom: '15px', boxSizing: 'border-box' }}
-                    >
-                        <option value="">-- Wybierz kierunek (opcjonalnie) --</option>
-                        {courses.map(c => (
-                            <option key={c.id} value={c.id}>{c.name} (Limit: {c.placesLimit})</option>
-                        ))}
-                    </select>
+                {/* Formularz w karcie */}
+                <div className="admin-form-section">
+                    <h3 style={{ marginBottom: '20px', color: '#1890ff' }}>
+                        {isEditing ? '📝 Edycja rekrutacji' : '➕ Nowa rekrutacja'}
+                    </h3>
+                    <form onSubmit={handleSubmit}>
+                        <div style={{ marginBottom: '15px' }}>
+                            <label>Nazwa rekrutacji</label>
+                            <input
+                                type="text"
+                                placeholder="np. Rekrutacja Letnia 2026"
+                                value={formData.name}
+                                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                required
+                            />
+                        </div>
 
-                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', cursor: 'pointer', fontWeight: 'bold' }}>
-                        <input
-                            type="checkbox"
-                            checked={formData.isActive}
-                            onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
-                            style={{ marginRight: '10px', width: '18px', height: '18px' }}
-                        />
-                        Rekrutacja jest aktywna (widoczna dla kandydatów)
-                    </label>
+                        <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+                            <div style={{ flex: 1 }}>
+                                <label>Data rozpoczęcia</label>
+                                <input
+                                    type="date"
+                                    value={formData.startDate}
+                                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <label>Data zakończenia</label>
+                                <input
+                                    type="date"
+                                    value={formData.endDate}
+                                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                                    required
+                                />
+                            </div>
+                        </div>
 
-                    <button type="submit" style={{ backgroundColor: '#52c41a', color: 'white', border: 'none', padding: '10px 20px', cursor: 'pointer', borderRadius: '4px', fontWeight: 'bold', transition: 'background-color 0.3s ease', marginRight: '10px' }}>
-                        {isEditing ? 'Zapisz zmiany' : 'Utwórz rekrutację'}
-                    </button>
+                        <div style={{ marginBottom: '15px' }}>
+                            <label>Przypisz do kierunku</label>
+                            <select
+                                value={formData.courseId}
+                                onChange={(e) => setFormData({...formData, courseId: e.target.value})}
+                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }}
+                            >
+                                <option value="">-- Wybierz kierunek --</option>
+                                {courses.map(c => (
+                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                    {isEditing && (
-                        <button type="button" onClick={resetForm} style={{ padding: '10px 20px', backgroundColor: 'transparent', color: '#595959', border: '1px solid #d9d9d9', borderRadius: '4px', cursor: 'pointer', fontWeight: '500' }}>
-                            Anuluj
-                        </button>
-                    )}
-                </form>
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.isActive}
+                                    onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
+                                    style={{ width: '18px', height: '18px' }}
+                                />
+                                <span>Oznacz jako aktywną (widoczna dla kandydatów)</span>
+                            </label>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <button
+                                type="submit"
+                                className="primary-button"
+                                style={{
+                                    height: '45px',
+                                    boxSizing: 'border-box',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '0 25px',
+                                    margin: 0
+                                }}
+                            >
+                                {isEditing ? 'Zapisz zmiany' : 'Utwórz rekrutację'}
+                            </button>
+
+                            {isEditing && (
+                                <button
+                                    type="button"
+                                    onClick={resetForm}
+                                    className="cancel-button"
+                                    style={{
+                                        height: '45px',
+                                        boxSizing: 'border-box',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        margin: 0
+                                    }}
+                                >
+                                    Anuluj
+                                </button>
+                            )}
+                        </div>
+                    </form>
+                </div>
+
+                {/* Tabela rekrutacji */}
+                <div className="admin-table-wrapper" style={{ overflowX: 'auto', marginTop: '20px' }}>
+                    <table className="admin-table" style={{ width: '100%', minWidth: '750px', tableLayout: 'fixed' }}>
+                        <thead>
+                            <tr>
+                                <th style={{ width: '45px', textAlign: 'center', padding: '10px 5px' }}>ID</th>
+                                <th style={{ textAlign: 'left', padding: '10px 5px' }}>Nazwa rekrutacji</th>
+                                <th style={{ width: '150px', textAlign: 'left', padding: '10px 5px' }}>Kierunek</th>
+                                <th style={{ width: '110px', textAlign: 'center', padding: '10px 5px' }}>Termin</th>
+                                <th style={{ width: '90px', textAlign: 'center', padding: '10px 5px' }}>Status</th>
+                                <th style={{ width: '130px', textAlign: 'center', padding: '10px 5px' }}>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {recruitments.map(rec => (
+                                <tr key={rec.id} className="table-row-hover">
+                                    <td style={{ textAlign: 'center', color: '#8c8c8c', fontSize: '12px' }}>{rec.id}</td>
+
+                                    <td style={{ padding: '8px 5px', overflow: 'hidden' }}>
+                                        <div style={{
+                                            fontWeight: '600',
+                                            fontSize: '13px',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
+                                        }} title={rec.name}>
+                                            {rec.name}
+                                        </div>
+                                    </td>
+
+                                    <td style={{ padding: '8px 5px' }}>
+                                        <div style={{
+                                            fontSize: '12px',
+                                            color: '#1890ff',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
+                                        }} title={getAssignedCourseName(rec.id).toString()}>
+                                            {getAssignedCourseName(rec.id)}
+                                        </div>
+                                    </td>
+
+                                    <td style={{ textAlign: 'center', fontSize: '11px', lineHeight: '1.4', padding: '8px 5px' }}>
+                                        <span style={{ color: '#595959' }}>{rec.startDate}</span>
+                                        <br />
+                                        <span style={{ color: '#bfbfbf', fontSize: '10px' }}>do</span>
+                                        <br />
+                                        <span style={{ color: '#595959' }}>{rec.endDate}</span>
+                                    </td>
+
+                                    <td style={{ textAlign: 'center', padding: '8px 5px' }}>
+                                        <span style={{
+                                            backgroundColor: rec.isActive ? '#f6ffed' : '#fff1f0',
+                                            color: rec.isActive ? '#52c41a' : '#f5222d',
+                                            padding: '2px 8px',
+                                            borderRadius: '20px',
+                                            fontSize: '10px',
+                                            fontWeight: '600',
+                                            border: `1px solid ${rec.isActive ? '#b7eb8f' : '#ffa39e'}`,
+                                            display: 'inline-block'
+                                        }}>
+                                            {rec.isActive ? 'AKTYWNA' : 'OFF'}
+                                        </span>
+                                    </td>
+
+                                    <td style={{ textAlign: 'center', padding: '8px 5px' }}>
+                                        <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+                                            <button onClick={() => startEdit(rec)} className="details-button" style={{ padding: '4px 8px', fontSize: '11px' }}>
+                                                Edytuj
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(rec.id)}
+                                                className="btn-delete-outline"
+                                                style={{ padding: '4px 8px', fontSize: '11px' }}
+                                            >
+                                                Usuń
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            {/* LISTA REKRUTACJI */}
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr style={{ borderBottom: '2px solid #ddd', textAlign: 'center' }}>
-                        <th style={{ padding: '10px' }}>ID</th>
-                        <th style={{ padding: '10px', textAlign: 'left' }}>Nazwa</th>
-                        <th style={{ padding: '10px' }}>Przypisany Kierunek</th> {/* NOWA KOLUMNA */}
-                        <th style={{ padding: '10px' }}>Okres trwania</th>
-                        <th style={{ padding: '10px' }}>Status</th>
-                        <th style={{ padding: '10px' }}>Akcje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {recruitments.map(rec => (
-                        <tr key={rec.id} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '10px', textAlign: 'center' }}>{rec.id}</td>
-                            <td style={{ padding: '10px' }}><strong>{rec.name}</strong></td>
-                            {/* WYSWIETLANIE KIERUNKU */}
-                            <td style={{ padding: '10px', textAlign: 'center' }}>{getAssignedCourseName(rec.id)}</td>
-                            <td style={{ padding: '10px', textAlign: 'center', fontSize: '14px' }}>{rec.startDate} <br/> - <br/> {rec.endDate}</td>
-                            <td style={{ padding: '10px', textAlign: 'center' }}>
-                                <span style={{
-                                    backgroundColor: rec.isActive ? '#e6f7ff' : '#fff1f0',
-                                    color: rec.isActive ? '#1890ff' : '#f5222d',
-                                    padding: '4px 8px',
-                                    borderRadius: '4px',
-                                    fontWeight: 'bold',
-                                    fontSize: '12px'
-                                }}>
-                                    {rec.isActive ? 'AKTYWNA' : 'ZAKOŃCZONA'}
-                                </span>
-                            </td>
-                            <td style={{ padding: '10px', display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                                <button onClick={() => startEdit(rec)} style={{ padding: '6px 12px', backgroundColor: '#1890ff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Edytuj</button>
-                                <button onClick={() => handleDelete(rec.id)} style={{ padding: '6px 12px', backgroundColor: '#ff4d4f', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Usuń</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
         </div>
     );
 }

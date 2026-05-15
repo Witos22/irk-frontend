@@ -176,7 +176,7 @@ function AdminDashboard() {
                         <div style={{ fontSize: '50px', marginBottom: '15px' }}>📚</div>
 
                         <h3 style={{ margin: '0 0 10px 0', fontSize: '20px' }}>
-                            Zarządzanie Kursami
+                            Zarządzanie Kierunkami
                         </h3>
 
                         <p
@@ -194,7 +194,7 @@ function AdminDashboard() {
                         onClick={() => navigate('/admin/courses')}
                         style={buttonStyle(true)}
                     >
-                        Przejdź do kursów
+                        Przejdź do kierunków
                     </button>
                 </div>
 
@@ -228,8 +228,8 @@ function AdminDashboard() {
                     </div>
 
                     <button
-                        onClick={() => navigate('/admin/candidates')}
-                        style={buttonStyle(true)}
+                        className="btn-dashboard btn-primary"
+                        onClick={() => navigate('/admin/recruitments-list')}
                     >
                         Zarządzaj kandydatami
                     </button>
@@ -268,7 +268,7 @@ function AdminDashboard() {
                         onClick={() => navigate('/admin/recruitments')}
                         style={buttonStyle(true)}
                     >
-                        Zobacz raporty
+                        Zarządzaj rekrutacjami
                     </button>
                 </div>
             </div>
