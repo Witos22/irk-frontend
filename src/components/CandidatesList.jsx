@@ -32,7 +32,7 @@ function CandidatesList() {
         <div className="candidates-container">
             <div style={{ textAlign: 'left', marginBottom: '15px' }}>
                 <button onClick={() => navigate(-1)} className="back-button">
-                    Powrót do listy kierunków
+                    Powrót do listy rekrutacji
                 </button>
             </div>
             <div style={{
