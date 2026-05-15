@@ -10,6 +10,7 @@ import AdminCoursesManager from './components/AdminCoursesManager';
 import ResultsForm from './components/ResultsForm';
 import EducationalOffer from './components/EducationalOffer';
 import AdminRecruitmentManager from './components/AdminRecruitmentManager';
+import CandidatesList from './components/CandidatesList';
 
 function App() {
   return (
@@ -49,7 +50,7 @@ function App() {
 
         <Route path='/courses' element={
             <div className='app-container'>
-            <h1>System IRK</h1>
+            <span className="irk-logo">System IRK</span>
             <CoursesForm/>
             </div>
         }/>
@@ -71,8 +72,8 @@ function App() {
         }/>
 
         <Route path="/admin/courses" element={
-            <div className='app-container'>
-            <h1>System IRK</h1>
+            <div className='dashboard-wrapper'>
+            <span className="irk-logo">System IRK</span>
             <AdminCoursesManager/>
             </div>
         }/>
@@ -86,10 +87,15 @@ function App() {
 
         <Route path="/results" element={
           <div className="results-page-container">
-          <h1>System IRK</h1>
+          <span className="irk-logo">System IRK</span>
             <ResultsForm />
           </div>
         } />
+        <Route path="/admin/candidates" element={
+            <div className='admin-page-container'>
+               <CandidatesList />
+            </div>
+        }/>
       </Routes>
     </Router>
   )
