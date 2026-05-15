@@ -5,7 +5,6 @@ import LoginForm from './components/LoginForm';
 import Dashboard from './components/Dashboard';
 import AdminLoginForm from './components/AdminLoginForm';
 import AdminDashboard from './components/AdminDashboard';
-import CoursesForm from './components/CoursesForm';
 import AdminCoursesManager from './components/AdminCoursesManager';
 import ResultsForm from './components/ResultsForm';
 import EducationalOffer from './components/EducationalOffer';
@@ -93,11 +92,11 @@ function App() {
             <ResultsForm />
           </div>
         } />
-        <Route path="/admin/candidates" element={
-            <div className='admin-page-container'>
-               <CandidatesList />
-            </div>
-        }/>
+        <Route path="/admin/candidates/:recruitmentId" element={
+                    <div className='admin-page-container'>
+                       <CandidatesList />
+                    </div>
+                }/>
         <Route path="/admin/recruitments-list" element={
             <div className='admin-page-container'>
                <RecruitmentList />

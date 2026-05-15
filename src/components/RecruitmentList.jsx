@@ -4,15 +4,31 @@ import { useNavigate } from 'react-router-dom';
 function RecruitmentList() {
     const navigate = useNavigate();
     const [recruitments, setRecruitments] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const API_URL = 'http://localhost:8081/api/recruitments';
 
     useEffect(() => {
-        const mockRecruitments = [
-            { id: 1, name: "Informatyka - Studia I stopnia", startDate: "2024-06-01", endDate: "2024-07-15", isActive: true },
-            { id: 2, name: "Prawo - Jednolite Magisterskie", startDate: "2024-06-01", endDate: "2024-07-20", isActive: true },
-            { id: 3, name: "Zarządzanie - Studia Zaoczne", startDate: "2024-08-01", endDate: "2024-09-10", isActive: false },
-        ];
-        setRecruitments(mockRecruitments);
+        const fetchRecruitments = async () => {
+            try {
+                const response = await fetch(API_URL, { credentials: 'include' });
+                if (response.ok) {
+                    const data = await response.json();
+                    setRecruitments(data);
+                } else {
+                    console.error("Błąd pobierania rekrutacji");
+                }
+            } catch (err) {
+                console.error("Błąd połączenia z serwerem", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRecruitments();
     }, []);
+
+    if (loading) return <div>Ładowanie naborów...</div>;
 
     return (
         <div className="dashboard-wrapper">
@@ -53,7 +69,8 @@ function RecruitmentList() {
                         </div>
                         <button
                             className="btn-dashboard btn-primary"
-                            onClick={() => navigate(`/admin/candidates`)}
+                            // Przekazujemy ID wybranej rekrutacji w URL
+                            onClick={() => navigate(`/admin/candidates/${rec.id}`)}
                         >
                             Zarządzaj kandydatami
                         </button>
