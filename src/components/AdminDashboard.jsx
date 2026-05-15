@@ -247,10 +247,10 @@ function AdminDashboard() {
                     }}
                 >
                     <div>
-                        <div style={{ fontSize: '50px', marginBottom: '15px' }}>📈</div>
+                        <div style={{ fontSize: '50px', marginBottom: '15px' }}>🖥️</div>
 
                         <h3 style={{ margin: '0 0 10px 0', fontSize: '20px' }}>
-                            Raporty i Statystyki
+                            Zarządzanie Rekrutacją
                         </h3>
 
                         <p
@@ -260,12 +260,12 @@ function AdminDashboard() {
                                 lineHeight: '1.5'
                             }}
                         >
-                            Generuj raporty i analizuj dane systemu.
+                            Twórz rekrutację na dany kierunek
                         </p>
                     </div>
 
                     <button
-                        onClick={() => navigate('/admin/reports')}
+                        onClick={() => navigate('/admin/recruitments')}
                         style={buttonStyle(true)}
                     >
                         Zobacz raporty
