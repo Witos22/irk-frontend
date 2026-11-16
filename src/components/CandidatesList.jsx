@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 function CandidatesList() {
     const navigate = useNavigate();
     const { recruitmentId } = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // Obsługa trybu widoku: 'all' | 'qualified' | 'reserve' (z zachowaniem zgodności dla ?qualified=true)
+    const filterMode = searchParams.get('filter')
+        || (searchParams.get('qualified') === 'true' ? 'qualified' : 'all');
+
     const [applications, setApplications] = useState([]);
+    const [recruitment, setRecruitment] = useState(null);
     const [recruitmentName, setRecruitmentName] = useState("Ładowanie...");
     const [loading, setLoading] = useState(true);
     const [selectedApp, setSelectedApp] = useState(null);
@@ -24,7 +31,6 @@ function CandidatesList() {
 
                     setApplications(sortedData);
 
-                    // Pobieramy dokumenty dla każdej aplikacji
                     const docsMap = {};
                     sortedData.forEach(app => {
                         if (app.documents) {
@@ -33,7 +39,8 @@ function CandidatesList() {
                     });
                     setDocuments(docsMap);
 
-                    if(sortedData.length > 0 && sortedData[0].recruitment) {
+                    if (sortedData.length > 0 && sortedData[0].recruitment) {
+                        setRecruitment(sortedData[0].recruitment);
                         setRecruitmentName(sortedData[0].recruitment.name);
                     } else {
                         setRecruitmentName("Wybrana rekrutacja (Brak kandydatów)");
@@ -106,6 +113,39 @@ function CandidatesList() {
             : { backgroundColor: '#fff1f0', color: '#ff4d4f', border: '1px solid #ffa39e' };
     };
 
+    const isRecruitmentClosed = recruitment && (
+        recruitment.active === false ||
+        recruitment.isActive === false ||
+        (recruitment.endDate && new Date(recruitment.endDate) < new Date())
+    );
+
+    const displayedApplications = applications.filter(app => {
+        const status = app.status?.toUpperCase();
+        if (filterMode === 'qualified') return status === "ZAKWALIFIKOWANY";
+        if (filterMode === 'reserve') return status === "LISTA REZERWOWA";
+        return true;
+    });
+
+    const handleFilterChange = (mode) => {
+        if (mode === 'all') {
+            setSearchParams({}, { replace: true });
+        } else {
+            setSearchParams({ filter: mode }, { replace: true });
+        }
+    };
+
+    const getHeaderTitle = () => {
+        if (filterMode === 'qualified') return 'Lista zakwalifikowanych: ';
+        if (filterMode === 'reserve') return 'Lista rezerwowa: ';
+        return 'Kandydaci: ';
+    };
+
+    const getEmptyTableMessage = () => {
+        if (filterMode === 'qualified') return 'Brak zakwalifikowanych kandydatów w tej rekrutacji.';
+        if (filterMode === 'reserve') return 'Brak kandydatów na liście rezerwowej w tej rekrutacji.';
+        return 'Brak kandydatów w tej rekrutacji.';
+    };
+
     if (loading) return <div>Ładowanie kandydatów...</div>;
 
     return (
@@ -119,6 +159,8 @@ function CandidatesList() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '15px',
                 marginBottom: '30px',
                 paddingBottom: '15px',
                 borderBottom: '1px solid #e8e8e8'
@@ -127,22 +169,76 @@ function CandidatesList() {
                     <div style={{ width: '4px', height: '30px', backgroundColor: '#1890ff', borderRadius: '2px' }}></div>
                     <div>
                         <h1 style={{ fontSize: '24px', fontWeight: '600', color: '#262626', margin: 0 }}>
-                            Kandydaci: <span style={{ color: '#1890ff' }}>{recruitmentName}</span>
+                            {getHeaderTitle()}
+                            <span style={{ color: '#1890ff' }}>{recruitmentName}</span>
                         </h1>
-                        <p style={{ margin: 0, color: '#8c8c8c', fontSize: '14px' }}>Liczba chętnych: {applications.length}</p>
+                        <p style={{ margin: 0, color: '#8c8c8c', fontSize: '14px' }}>
+                            Wyświetlono: {displayedApplications.length} z {applications.length} kandydatów
+                        </p>
                     </div>
                 </div>
 
-                <button className="button" style={{
-                    backgroundColor: '#0056b3',
-                    color: 'white',
-                    border: 'none',
-                    padding: '10px 20px',
-                    borderRadius: '8px',
-                    cursor: 'pointer'
-                }} onClick={() => window.print()}>
-                    🖨️ Drukuj listę
-                </button>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    {isRecruitmentClosed && (
+                        <>
+                            <button
+                                onClick={() => handleFilterChange('all')}
+                                style={{
+                                    backgroundColor: filterMode === 'all' ? '#262626' : '#f0f0f0',
+                                    color: filterMode === 'all' ? 'white' : '#262626',
+                                    border: '1px solid #d9d9d9',
+                                    padding: '10px 16px',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                Wszyscy
+                            </button>
+
+                            <button
+                                onClick={() => handleFilterChange('qualified')}
+                                style={{
+                                    backgroundColor: filterMode === 'qualified' ? '#52c41a' : '#f6ffed',
+                                    color: filterMode === 'qualified' ? 'white' : '#52c41a',
+                                    border: '1px solid #b7eb8f',
+                                    padding: '10px 16px',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                Zakwalifikowani
+                            </button>
+
+                            <button
+                                onClick={() => handleFilterChange('reserve')}
+                                style={{
+                                    backgroundColor: filterMode === 'reserve' ? '#faad14' : '#fff7e6',
+                                    color: filterMode === 'reserve' ? 'white' : '#faad14',
+                                    border: '1px solid #ffe58f',
+                                    padding: '10px 16px',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                Lista rezerwowa
+                            </button>
+                        </>
+                    )}
+
+                    <button className="button" style={{
+                        backgroundColor: '#0056b3',
+                        color: 'white',
+                        border: 'none',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        cursor: 'pointer'
+                    }} onClick={() => window.print()}>
+                        🖨️ Drukuj listę
+                    </button>
+                </div>
             </div>
             <div className="candidates-table-card">
                 <table className="candidates-table">
@@ -158,7 +254,7 @@ function CandidatesList() {
                         </tr>
                     </thead>
                     <tbody>
-                        {applications.map((app, index) => {
+                        {displayedApplications.map((app, index) => {
                             const docStatus = getGeneralDocumentsStatus(app.id);
 
                             return (
@@ -240,7 +336,7 @@ function CandidatesList() {
                             );
                         })}
 
-                        {applications.length === 0 && (
+                        {displayedApplications.length === 0 && (
                             <tr>
                                 <td
                                     colSpan="7"
@@ -250,7 +346,7 @@ function CandidatesList() {
                                         color: '#999'
                                     }}
                                 >
-                                    Brak kandydatów w tej rekrutacji.
+                                    {getEmptyTableMessage()}
                                 </td>
                             </tr>
                         )}
@@ -268,7 +364,7 @@ function CandidatesList() {
                     }}>
                         {/* Nagłówek modala */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #f0f0f0', paddingBottom: '15px', marginBottom: '20px' }}>
-                            <h2 style={{ margin: 0, color: '#333' }}>📋{selectedApp.candidate.firstName} {selectedApp.candidate.lastName}</h2>
+                            <h2 style={{ margin: 0, color: '#333' }}>📋 {selectedApp.candidate.firstName} {selectedApp.candidate.lastName}</h2>
                             <button
                                 onClick={() => setSelectedApp(null)}
                                 style={{ border: 'none', background: 'none', fontSize: '24px', cursor: 'pointer', color: '#999' }}
@@ -299,7 +395,6 @@ function CandidatesList() {
                                         <tr key={doc.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
                                             <td style={{ padding: '12px 10px', fontSize: '13px', fontWeight: '500' }}>{doc.documentName}</td>
                                             <td style={{ padding: '12px 10px', textAlign: 'center' }}>
-                                                {/* NAPRAWA: Zmieniono doc.documentStatus na doc.status */}
                                                 <select
                                                     value={doc.status || "Niedostarczone"}
                                                     onChange={(e) => handleDocumentStatusChange(selectedApp.id, doc.id, e.target.value)}
